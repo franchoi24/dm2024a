@@ -1,0 +1,2 @@
+max_depth	min_split	ganancia_promedio
+8	650	49124000
