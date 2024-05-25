@@ -112,7 +112,7 @@ tb_grid_search <- data.table( max_depth = integer(),
 
 
 # itero por los loops anidados para cada hiperparametro
-
+# iterar por cp y minbucket: buscar en bibliografia cuales son los valores posibles para cp y rpart
 for (vmax_depth in c(4, 6, 8, 10, 12, 14)) {
   for (vmin_split in c(1000, 800, 600, 400, 200, 100, 50, 20, 10)) {
     # notar como se agrega
