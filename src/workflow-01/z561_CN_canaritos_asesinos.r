@@ -10,6 +10,8 @@ require("yaml")
 require("Rcpp")
 
 require("lightgbm")
+require("Boruta")
+require("Amelia")
 
 
 #cargo la libreria
@@ -53,6 +55,10 @@ fganancia_lgbm_meseta <- function(probs, datos) {
 # y así hacer lugar a nuevas variables importantes
 
 GVEZ <- 1
+
+Boruta <- function() {
+ 
+}
 
 CanaritosAsesinos <- function(
   canaritos_ratio,
