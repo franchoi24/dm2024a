@@ -100,7 +100,7 @@ CanaritosAsesinos <- function(
   canaritos_desvios,
   canaritos_semilla) {
 
-  cat( "inicio CanaritosAsesinos()\n")
+  cat( "inicio Boruta()\n")
   gc()
   dataset[, clase01 := 0L ]
   dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 
