@@ -80,7 +80,7 @@ Boruta <- function(canaritos_semilla) {
       (clase01 == 1 | azar < envg$PARAM$train$undersampling))]
 
   amelia_dataset <- amelia(
-    dataset[entrenamiento == TRUE, campos_buenos, with = FALSE],
+    x = dataset[entrenamiento == TRUE, campos_buenos, with = FALSE],
     m = 3,
     ts = "month",
   )
