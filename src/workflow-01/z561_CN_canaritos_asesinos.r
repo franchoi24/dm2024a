@@ -13,8 +13,8 @@ require("yaml")
 require("Rcpp")
 
 require("lightgbm")
-require("Boruta")
-require("Amelia")
+library("Boruta")
+library("Amelia")
 
 
 #cargo la libreria
