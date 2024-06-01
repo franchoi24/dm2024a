@@ -258,6 +258,8 @@ setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 #--------------------------------------------------------------------------
 # Elimino las variables que no son tan importantes en el dataset
 # with great power comes grest responsability
+cat("Proceso de eliminacion de variables\n")
+cat(envg$PARAM$train$boruta)
 if (envg$PARAM$train$boruta) {
   envg$OUTPUT$Boruta$ncol_antes <- ncol(dataset)
   Boruta()
