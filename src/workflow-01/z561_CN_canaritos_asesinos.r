@@ -60,7 +60,39 @@ fganancia_lgbm_meseta <- function(probs, datos) {
 GVEZ <- 1
 
 Boruta <- function() {
- 
+  cat( "inicio CanaritosAsesinos()\n")
+  gc()
+  dataset[, clase01 := 0L ]
+  dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 
+      clase01 := 1L ]
+
+  set.seed(canaritos_semilla, kind = "L'Ecuyer-CMRG")
+
+  campos_buenos <- setdiff(
+    colnames(dataset),
+    c( campitos, "clase01")
+  )
+
+  azar <- runif(nrow(dataset))
+
+  dataset[, entrenamiento :=
+    as.integer( get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$training &
+      (clase01 == 1 | azar < envg$PARAM$train$undersampling))]
+
+  amelia_dataset <- amelia(
+    dataset[entrenamiento == TRUE, campos_buenos, with = FALSE],
+    m = 3,
+    ts = "month",
+  )
+
+  boruta.dataset_train <- Boruta(amelia_dataset$imputations[[1]],
+    dataset[entrenamiento == TRUE, clase01],
+    doTrace = 2,
+    maxRuns = 100,
+    ntree = 1000,
+    saveSteps = TRUE,
+    decomp = "pca") 
+  print(boruta.dataset_train)
 }
 
 CanaritosAsesinos <- function(
@@ -226,16 +258,23 @@ setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 #--------------------------------------------------------------------------
 # Elimino las variables que no son tan importantes en el dataset
 # with great power comes grest responsability
+if (envg$PARAM$train$boruta) {
+  envg$OUTPUT$Boruta$ncol_antes <- ncol(dataset)
+  Boruta()
+  envg$OUTPUT$Boruta$ncol_despues <- ncol(dataset)
+  GrabarOutput()
+} else {
+  envg$OUTPUT$Cana ritosAsesinos$ncol_antes <- ncol(dataset)
+  CanaritosAsesinos(
+    canaritos_ratio = envg$PARAM$CanaritosAsesinos$ratio,
+    canaritos_desvios = envg$PARAM$CanaritosAsesinos$desvios,
+    canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla
+  )
 
-envg$OUTPUT$CanaritosAsesinos$ncol_antes <- ncol(dataset)
-CanaritosAsesinos(
-  canaritos_ratio = envg$PARAM$CanaritosAsesinos$ratio,
-  canaritos_desvios = envg$PARAM$CanaritosAsesinos$desvios,
-  canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla
-)
+  envg$OUTPUT$CanaritosAsesinos$ncol_despues <- ncol(dataset)
+  GrabarOutput()
 
-envg$OUTPUT$CanaritosAsesinos$ncol_despues <- ncol(dataset)
-GrabarOutput()
+}
 
 #------------------------------------------------------------------------------
 # grabo el dataset
