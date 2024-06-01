@@ -219,7 +219,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
 # Canaritos Asesinos   Baseline
 #  azaroso, utiliza semilla
 
-CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
+CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio, boruta=FALSE)
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
@@ -234,6 +234,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
   param_local$train$undersampling <- 0.1
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
+  param_local$train$boruta <- boruta
 
 
   # ratio varia de 0.0 a 2.0
@@ -391,7 +392,7 @@ wf_sept <- function( pnombrewf )
   DR_drifting_base(metodo="rank_cero_fijo")
   FEhist_base()
   FErf_attributes_base()
-  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0)
+  CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0, boruta=FALSE)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base()

@@ -70,7 +70,7 @@ Boruta <- function(canaritos_semilla) {
 
   campos_buenos <- setdiff(
     colnames(dataset),
-    c( campitos, "clase01")
+    c( campitos, "clase01","entrenamiento", "ccuenta_corriente_delta1")
   )
 
   azar <- runif(nrow(dataset))
@@ -81,8 +81,7 @@ Boruta <- function(canaritos_semilla) {
 
   amelia_dataset <- amelia(
     x = dataset[entrenamiento == TRUE, campos_buenos, with = FALSE],
-    m = 3,
-    ts = "month",
+    m = 3
   )
 
   boruta.dataset_train <- Boruta(amelia_dataset$imputations[[1]],
