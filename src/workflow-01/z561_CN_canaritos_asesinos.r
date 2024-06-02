@@ -61,7 +61,7 @@ fganancia_lgbm_meseta <- function(probs, datos) {
 GVEZ <- 1
 
 Boruta <- function(canaritos_semilla) {
-  cat( "inicio CanaritosAsesinos()\n")
+  cat( "inicio Boruta()\n")
   gc()
   dataset[, clase01 := 0L ]
   dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 
@@ -123,7 +123,7 @@ CanaritosAsesinos <- function(
   canaritos_desvios,
   canaritos_semilla) {
 
-  cat( "inicio Boruta()\n")
+  cat( "inicio CanaritosAsesinos()\n")
   gc()
   dataset[, clase01 := 0L ]
   dataset[ get(envg$PARAM$dataset_metadata$clase) %in% envg$PARAM$train$clase01_valor1, 
