@@ -5,8 +5,8 @@
 rm(list = ls(all.names = TRUE)) # remove all objects
 gc(full = TRUE) # garbage collection
 
-install.packages("Boruta")
-install.packages("Amelia")
+install.packages("Boruta",repos = "http://cran.us.r-project.org")
+install.packages("Amelia",repos = "http://cran.us.r-project.org")
 
 require("data.table")
 require("yaml")
