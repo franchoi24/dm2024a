@@ -14,8 +14,8 @@ require("yaml")
 require("Rcpp")
 
 require("lightgbm")
-library("Boruta")
-library("Amelia")
+require("Boruta")
+require("Amelia")
 
 
 #cargo la libreria
@@ -115,7 +115,7 @@ Boruta <- function(canaritos_semilla) {
   cols_rej <- c(rej_names)
   
   #remove rejected columns from original dataframe
-  dataset <- dataset[, !(colnames(pf_recent) %in% cols_rej)]
+  dataset <- dataset[, !(colnames(dataset) %in% cols_rej)]
 }
 
 CanaritosAsesinos <- function(
