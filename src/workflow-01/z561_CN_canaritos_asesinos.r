@@ -91,7 +91,30 @@ Boruta <- function(canaritos_semilla) {
     ntree = 1000,
     saveSteps = TRUE,
     decomp = "pca") 
-  print(boruta.dataset_train)
+  
+    fwrite(tb_importancia,
+         file = paste0("impo_", GVEZ, ".txt"),
+         sep = "\t"
+  )
+  
+  pf_recent_boruta_df <- attStats(boruta.dataset_train)
+  str(pf_recent_boruta_df)
+  
+  #subset to for confirmed and rejected variables 
+  boruta_confirmed <- subset(pf_recent_boruta_df, subset = pf_recent_boruta_df$decision == "Confirmed")
+  boruta_rejected <- subset(pf_recent_boruta_df, subset = pf_recent_boruta_df$decision == "Rejected")
+  
+  #make empty dataframe of rejected column variable names
+  str(boruta_rejected)
+  rej <- t(boruta_rejected)
+  rej_empty <- rej[-c(1:6), ]
+  
+  # get names of rejected columns
+  rej_names <- colnames(rej_empty[,2:49])
+  cols_rej <- c(rej_names)
+  
+  #remove rejected columns from original dataframe
+  dataset <- dataset[, !(colnames(pf_recent) %in% cols_rej)]
 }
 
 CanaritosAsesinos <- function(
