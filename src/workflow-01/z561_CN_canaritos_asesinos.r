@@ -82,7 +82,7 @@ Boruta <- function(canaritos_semilla) {
 
   amelia_dataset <- amelia(
     x = dataset[entrenamiento == TRUE, campos_buenos, with = FALSE],
-    m = 3
+    m = 1
   )
 
   boruta.dataset_train <- Boruta(amelia_dataset$imputations[[1]],
