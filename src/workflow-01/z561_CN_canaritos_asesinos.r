@@ -79,14 +79,22 @@ Boruta <- function(canaritos_semilla) {
   dataset[, entrenamiento :=
     as.integer( get(envg$PARAM$dataset_metadata$periodo) %in% envg$PARAM$train$training &
       (clase01 == 1 | azar < envg$PARAM$train$undersampling))]
+  
 
-  amelia_dataset <- amelia(
-    x = dataset[entrenamiento == TRUE, campos_buenos, with = FALSE],
-    m = 1
-  )
+  # Process lasts more than 24 hours
+  # amelia_dataset <- amelia(
+  #   x = dataset[entrenamiento == TRUE, campos_buenos, with = FALSE],
+  #   m = 1
+  # )
 
-  boruta.dataset_train <- Boruta(amelia_dataset$imputations[[1]],
-    dataset[entrenamiento == TRUE, clase01],
+  impute_median <- function(x) {
+    x[is.na(x)] <- median(x, na.rm = TRUE)
+    return(x)
+  }
+  data_imputed_median <- data.frame(lapply(dataset[entrenamiento == TRUE, campos_buenos, with = FALSE], impute_median))
+
+  boruta.dataset_train <- Boruta(x = data_imputed_median,
+    y = dataset[entrenamiento == TRUE, clase01],
     doTrace = 2,
     maxRuns = 100,
     ntree = 1000,
@@ -102,20 +110,23 @@ Boruta <- function(canaritos_semilla) {
   str(pf_recent_boruta_df)
   
   #subset to for confirmed and rejected variables 
-  boruta_confirmed <- subset(pf_recent_boruta_df, subset = pf_recent_boruta_df$decision == "Confirmed")
+  # Just going to eliminate Rejected variables for now
+  # Tentative will not be deleted
   boruta_rejected <- subset(pf_recent_boruta_df, subset = pf_recent_boruta_df$decision == "Rejected")
   
   #make empty dataframe of rejected column variable names
-  str(boruta_rejected)
   rej <- t(boruta_rejected)
-  rej_empty <- rej[-c(1:6), ]
   
   # get names of rejected columns
-  rej_names <- colnames(rej_empty[,2:49])
-  cols_rej <- c(rej_names)
+  rej_names <- colnames(rej)
+
+  fwrite(rej_names,
+    file = paste0("impo_", GVEZ, ".txt"),
+    sep = "\t"
+  )
   
   #remove rejected columns from original dataframe
-  dataset <- dataset[, !(colnames(dataset) %in% cols_rej)]
+  dataset[, (rej_names) := NULL]
 }
 
 CanaritosAsesinos <- function(
