@@ -60,7 +60,7 @@ fganancia_lgbm_meseta <- function(probs, datos) {
 
 GVEZ <- 1
 
-Boruta <- function(canaritos_semilla, p_value = 0.01) {
+BorutaAux <- function(canaritos_semilla, p_value = 0.01) {
   cat( "inicio Boruta()\n")
   gc()
   dataset[, clase01 := 0L ]
@@ -288,7 +288,7 @@ cat("Proceso de eliminacion de variables\n")
 cat(envg$PARAM$train$boruta)
 if (envg$PARAM$train$boruta) {
   envg$OUTPUT$Boruta$ncol_antes <- ncol(dataset)
-  Boruta(canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla, envg$PARAM$CanaritosAsesinos$p_value )
+  BorutaAux(canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla, envg$PARAM$CanaritosAsesinos$p_value )
   envg$OUTPUT$Boruta$ncol_despues <- ncol(dataset)
   GrabarOutput()
 } else {
