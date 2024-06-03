@@ -93,12 +93,12 @@ BorutaAux <- function(canaritos_semilla, p_value = 0.01) {
   }
   data_imputed_median <- data.frame(lapply(dataset[entrenamiento == TRUE, campos_buenos, with = FALSE], impute_median))
 
-  boruta.dataset_train <- Boruta(x = data_imputed_median,
+  boruta <- Boruta(x = data_imputed_median,
     y = dataset[entrenamiento == TRUE, clase01],
     maxRuns = 100,
     pValue = p_value) 
   
-  pf_recent_boruta_df <- attStats(boruta.dataset_train)
+  pf_recent_boruta_df <- attStats(boruta)
   str(pf_recent_boruta_df)
   
   #subset to for confirmed and rejected variables 
