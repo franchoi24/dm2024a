@@ -98,11 +98,6 @@ Boruta <- function(canaritos_semilla, p_value = 0.01) {
     maxRuns = 100,
     pValue = p_value) 
   
-    fwrite(tb_importancia,
-         file = paste0("impo_", GVEZ, ".txt"),
-         sep = "\t"
-  )
-  
   pf_recent_boruta_df <- attStats(boruta.dataset_train)
   str(pf_recent_boruta_df)
   
