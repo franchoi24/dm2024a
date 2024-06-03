@@ -219,7 +219,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
 # Canaritos Asesinos   Baseline
 #  azaroso, utiliza semilla
 
-CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio,p_value, boruta=FALSE)
+CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio, p_value, boruta=FALSE)
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
@@ -235,7 +235,7 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio,p_value, borut
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
   param_local$train$boruta <- boruta
-  param_local$train$p_value <- boruta
+  param_local$train$p_value <- p_value
 
 
   # ratio varia de 0.0 a 2.0
