@@ -51,5 +51,5 @@ rej <- t(boruta_rejected)
 rej_names <- c(colnames(rej), "clase01")
 dataset[, (rej_names) := NULL]
 fwrite(dataset,
-       file = paste0("~/buckets/b1/datasets/boruta_", p_value, "_", max_runs, ".csv.gv"),
+       file = paste0("~/buckets/b1/datasets/boruta_", p_value, "_", max_runs, ".csv.gz"),
        sep = "v")
