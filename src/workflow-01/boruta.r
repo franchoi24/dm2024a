@@ -41,7 +41,8 @@ data_imputed_median$clase01 <- dataset[entrenamiento == TRUE, clase01]
 boruta <- Boruta(clase01~.,
                  data = data_imputed_median,
                  maxRuns = max_runs,
-                 pValue = p_value)
+                 pValue = p_value,
+                 doTrace = 2)
 
 pf_recent_boruta_df <- attStats(boruta)
 str(pf_recent_boruta_df)
