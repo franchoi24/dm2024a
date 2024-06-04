@@ -53,4 +53,4 @@ rej_names_confirm <- setdiff(rej_names, campitos)
 dataset[, (rej_names_confirm) := NULL]
 fwrite(dataset,
        file = paste0("~/buckets/b1/datasets/boruta_", p_value, "_", max_runs, ".csv.gz"),
-       sep = "v")
+       sep = ",")
