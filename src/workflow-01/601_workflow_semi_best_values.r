@@ -93,7 +93,7 @@ FEintra_base <- function( pinputexps )
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 ) # linea fija
 
 
-  param_local$meta$script <- "/src/workflow-01/531_FE_intrames_exp3.r.r"
+  param_local$meta$script <- "/src/workflow-01/531_FE_intrames_exp3.r"
 
   param_local$semilla <- NULL  # no usa semilla, es deterministico
 
@@ -219,7 +219,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
 # Canaritos Asesinos   Baseline
 #  azaroso, utiliza semilla
 
-CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio,p_value, boruta=FALSE)
+CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio)
 {
   if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
 
@@ -234,8 +234,6 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio,p_value, borut
   param_local$train$undersampling <- 0.1
   param_local$train$gan1 <- 117000
   param_local$train$gan0 <-  -3000
-  param_local$train$boruta <- boruta
-  param_local$train$p_value <- p_value
 
 
   # ratio varia de 0.0 a 2.0
@@ -243,6 +241,35 @@ CN_canaritos_asesinos_base <- function( pinputexps, ratio, desvio,p_value, borut
   param_local$CanaritosAsesinos$ratio <- ratio
   # desvios estandar de la media, para el cutoff
   param_local$CanaritosAsesinos$desvios <- desvio
+
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+#------------------------------------------------------------------------------
+# Training Strategy  Baseline
+#   y solo incluyo en el dataset al 20% de los CONTINUA
+#  azaroso, utiliza semilla
+
+TS_strategy_base7 <- function( pinputexps )
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+
+  param_local$meta$script <- "/src/workflow-01/z571_TS_training_strategy.r"
+
+
+  param_local$future <- c(202107)
+  param_local$final_train <- c(202105, 202104, 202103, 202102,
+    202101, 202012, 202011, 202010, 202009)
+
+
+  param_local$train$training <- c(202103, 202102, 202101,
+    202012, 202011, 202010, 202009, 202008, 202007)
+  param_local$train$validation <- c(202104)
+  param_local$train$testing <- c(202105)
+
+  # Atencion  0.2  de  undersampling de la clase mayoritaria,  los CONTINUA
+  # 1.0 significa NO undersampling
+  param_local$train$undersampling <- 0.2
+  param_local$train$clase_minoritaria <- c( "BAJA+1", "BAJA+2")
 
   return( exp_correr_script( param_local ) ) # linea fija
 }
@@ -308,10 +335,10 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
     max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
-    min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
+    min_gain_to_split = 3.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+    lambda_l1 = 200.0, # lambda_l1 >= 0.0
+    lambda_l2 = 300.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
@@ -327,9 +354,9 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.8 ),
-    feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
+    learning_rate = c( 0.02, 0.3 ),
+    feature_fraction = c( 0.1, 0.9 ),
+    num_leaves = c( 8L,  256L,  "integer" ),
     min_data_in_leaf = c( 100L, 10000L, "integer" )
   )
 
@@ -340,6 +367,7 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
+
 # proceso ZZ_final  Baselina
 #  azaroso, utiliza semilla
 
@@ -362,8 +390,8 @@ ZZ_final_base9 <- function( pinputexps )
   param_local$train$gan0 <-  -3000
   param_local$train$meseta <- 2001
 
-  param_local$kaggle$envios_desde <-  9500L
-  param_local$kaggle$envios_hasta <- 13000L
+  param_local$kaggle$envios_desde <-  8000L
+  param_local$kaggle$envios_hasta <- 14000L
   param_local$kaggle$envios_salto <-   500L
   param_local$kaggle$competition <- "itba-data-mining-2024-a"
 
@@ -374,37 +402,74 @@ ZZ_final_base9 <- function( pinputexps )
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
+# proceso ZZ_final  Semillerio  baseline
+
+ZZ_final_semi_base <- function( pinputexps)
+{
+  if( -1 == (param_local <- exp_init())$resultado ) return( 0 )# linea fija
+
+  param_local$meta$script <- "/src/workflow-01/z593_ZZ_final_semillerio.r"
+
+  # Que modelos quiero, segun su posicion en el ranking e la Bayesian Optimizacion, ordenado por ganancia descendente
+  param_local$modelos_rank <- c(1)
+  param_local$metrica_order <- -1  # ordeno por el campo metrica en forma DESCENDENTE
+  
+  # Que modelos quiero, segun su iteracion_bayesiana de la Bayesian Optimizacion, SIN ordenar
+  param_local$modelos_iteracion <- c()
+
+  param_local$train$clase01_valor1 <- c( "BAJA+2", "BAJA+1")
+  param_local$train$positivos <- c( "BAJA+2")
+  param_local$train$gan1 <- 117000
+  param_local$train$gan0 <-  -3000
+  param_local$train$meseta <- 2001
+
+  param_local$kaggle$envios_desde <-  6500L
+  param_local$kaggle$envios_hasta <- 14000L
+  param_local$kaggle$envios_salto <-   500L
+  param_local$kaggle$competition <- "itba-data-mining-2024-a"
+
+  # para el caso que deba graficar
+  param_local$graficar$envios_desde <-  8000L
+  param_local$graficar$envios_hasta <- 20000L
+  param_local$graficar$ventana_suavizado <- 2001L
+
+  # El parametro fundamental de semillerio
+  # Es la cantidad de LightGBM's que ensamblo
+  # cuanto mas grande mejor, pero asintotico
+  param_local$semillerio <- 30
+
+  return( exp_correr_script( param_local ) ) # linea fija
+}
+#------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # A partir de ahora comienza la seccion de Workflows Completos
 #------------------------------------------------------------------------------
-# Este es el  Workflow Baseline
+# Este es el  Workflow Semillerio
 # Que predice 202109 donde NO conozco la clase
 # y genera archivos para kaggle
 
-wf_sept <- function( pnombrewf )
+wf_semillerio9 <- function( pnombrewf )
 {
   param_local <- exp_wf_init( pnombrewf ) # linea fija
 
   DT_incorporar_dataset_competencia2024()
-  
-  #CA_catastrophe_base( metodo="MachineLearning")
-  #FEintra_base()
-  #DR_drifting_base(metodo="rank_cero_fijo")
-  #FEhist_base()
-  #FErf_attributes_base()
-  #CN_canaritos_asesinos_base(ratio=0.2, desvio=4.0,p_value = 0.01, boruta=TRUE)
+  CA_catastrophe_base( metodo="MICE")
+  FEintra_base()
+  DR_drifting_base(metodo="deflacion")
+  DR_drifting_base(metodo="rank_cero_fijo")
+  FEhist_base()
+  FErf_attributes_base()
+  CN_canaritos_asesinos_base(ratio=1.0, desvio=0.0)
 
   ts9 <- TS_strategy_base9()
   ht <- HT_tuning_base()
-  
-  ZZ_final_base9( c(ht, ts9) )
+
+  ZZ_final_semi_base( c(ht, ts9) )
 
   return( exp_wf_end() ) # linea fija
 }
 #------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-# Aqui comienza el programa
+
 
 # llamo al workflow con future = 202109
-wf_sept()
-
+wf_semillerio9()
