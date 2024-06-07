@@ -205,7 +205,7 @@ Corregir_MachineLearning <- function(dataset) {
 
 Imputar_MICE <- function(dataset) {
   cat( "inicio Imputar_MICE()\n")
-  
+  options(repos = c("https://cloud.r-project.org/"))
   install.packages("data.table")
   install.packages("mice")
   library(data.table)
