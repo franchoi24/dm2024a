@@ -285,24 +285,16 @@ setorderv(dataset, envg$PARAM$dataset_metadata$primarykey)
 # Elimino las variables que no son tan importantes en el dataset
 # with great power comes grest responsability
 cat("Proceso de eliminacion de variables\n")
-cat(envg$PARAM$train$boruta)
-if (envg$PARAM$train$boruta) {
-  envg$OUTPUT$Boruta$ncol_antes <- ncol(dataset)
-  BorutaAux(canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla, envg$PARAM$CanaritosAsesinos$p_value )
-  envg$OUTPUT$Boruta$ncol_despues <- ncol(dataset)
-  GrabarOutput()
-} else {
   envg$OUTPUT$CanaritosAsesinos$ncol_antes <- ncol(dataset)
-  CanaritosAsesinos(
-    canaritos_ratio = envg$PARAM$CanaritosAsesinos$ratio,
-    canaritos_desvios = envg$PARAM$CanaritosAsesinos$desvios,
-    canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla
-  )
+CanaritosAsesinos(
+  canaritos_ratio = envg$PARAM$CanaritosAsesinos$ratio,
+  canaritos_desvios = envg$PARAM$CanaritosAsesinos$desvios,
+  canaritos_semilla = envg$PARAM$CanaritosAsesinos$semilla
+)
 
-  envg$OUTPUT$CanaritosAsesinos$ncol_despues <- ncol(dataset)
-  GrabarOutput()
+envg$OUTPUT$CanaritosAsesinos$ncol_despues <- ncol(dataset)
+GrabarOutput()
 
-}
 
 #------------------------------------------------------------------------------
 # grabo el dataset
